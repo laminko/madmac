@@ -12,7 +12,7 @@ MAC address generator library for testers.
 
 Using `pip`:
 
-> `pip install python-madmac`
+> `pip install madmac`
 
 
 Using source:
