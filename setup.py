@@ -19,7 +19,7 @@ URL = 'https://github.com/laminko/madmac'
 EMAIL = 'lminko.lmk@gmail.com'
 AUTHOR = 'lmk'
 REQUIRES_PYTHON = '>=3.5.2'
-VERSION = '0.2.0'
+VERSION = '0.3.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
