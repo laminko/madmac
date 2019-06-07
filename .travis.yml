@@ -1,11 +1,13 @@
 language: python
 python:
-  - "3.5"
-
-# command to install dependencies
-# install:
-#   - pip install -r requirements.txt
-
-# command to run tests
+- '3.5'
 script:
-  - python -m unittest tests/test*py
+- python -m unittest tests/test*py
+deploy:
+  provider: pypi
+  user: laminko
+  password:
+    secure: OmaA6XYw8k7fJOUl6r+XrWijLeHzoTtCwM1KoSmwxtH7qQHXSNAT9dOmYNQSteypHUgPnPnvG1h5JOBFXra+av0hYKIy+6eQA1C7d7rzp50/s55AGPem/FiXOuyfWyLD+kERJr5OM6hm0MeQjs7N4XmlsG+Hs9AM6Yn+HvM589Hj9x1+aWTlPTnaHM1wDqaYhBDeewBMTcEEhiURWgPKnt1A2LSIXAbFwoLiIUZNk66c+bxI3GRRz482l1YUX4OU+omSml+bBMu+wYJHhTbBnDAu3rLJxyn9Rp49UdgRDx2vTwCSgtBvh9rA4cWYXxUaKweHw2cZStpq3JI8FIIAB0nPOwzj5jz688xUkYwMTi5wTxPwyjeDu7VXpb6ouFyPXt/to9GctFa+4zxVtjoZrCrQ4dznmS4Uaz+4tTeo75/R4WpBQ0lTXIacUBvPn7OEkIFi5Wjk2Hn1MBxx0cB7G+N/zNiFyheMToX6epaxw1o6t7LovtQezRkQc3z8D2DWkX0DxxwI2bjP4qgmKaC+WvJE1ySl6xE+m91/bujGVv82mIo2ONr010T4XICWuXfN5EJ5V2WDJUtIWc/zgAUGXLUOQce/gS41EUJAQdlb9ttFTRaBcB6m8bJoM+TJmJPcKWddZsGhKDjvrMpp8JMlacV5SrFSi7D4fpOrV681Txk=
+  on:
+    branch: master
+  distributions: sdist bdist_wheel
