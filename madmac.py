@@ -1,3 +1,4 @@
+import argparse
 import random
 import re
 
@@ -122,7 +123,8 @@ class MacGenerator(object):
 
     pattern_oui = None
 
-    def __init__(self, oui=None, start=None, stop=None, total=1, delimiter=':', case='lower'):
+    def __init__(self, oui=None, start=None, stop=None, total=1,
+        delimiter=':', case='lower'):
         """
         :param oui: 6-digit organizationally unique identifier
         :param start: NIC specific start address
@@ -170,12 +172,16 @@ class MacGenerator(object):
                 self.i_start = hexstr_to_int(self.start)
 
         if not self.stop:
-            is_valid_total = self.total and access_object_member(self.total, 'real') and self.total >= 0
+            is_valid_total = self.total and \
+                access_object_member(self.total, 'real') and self.total >= 0
             if not is_valid_total:
                 raise ValueError('Invalid value for total.')
             else:
                 self.i_stop = self.i_start + self.total
         else:
+            if not self.start:
+                raise ValueError(
+                    'Invalid usage. Use -s along with -r together.')
             self.stop = extract_alphanumeric(self.stop)
             if not validate_3octets(self.stop):
                 raise ValueError('Invalid value for ending address.')
@@ -207,11 +213,31 @@ class MacGenerator(object):
         return self.__build()
 
 
+def handle_args():
+    parser = argparse.ArgumentParser(
+        description='MAC address generator library for testers.')
+    parser.add_argument('-o', '--oui',
+        help='6-digit organizationally unique identifier')
+    parser.add_argument('-r', '--start',
+        help='NIC specific start address')
+    parser.add_argument('-s', '--stop',
+        help='NIC specific end address')
+    parser.add_argument('-t', '--total', type=int, default=1,
+        help='Number of MACs to generate')
+    parser.add_argument('-d', '--delimiter', default=':',
+        help='Delimiter for MAC address')
+    parser.add_argument('-c', '--case', default='lower',
+        help='Use lower or upper')
+    return parser.parse_args()
+
+
 def main():
-    macg = MacGenerator()
-    macs = macg.generate()
-    from pprint import pprint
-    pprint(list(macs))
+    try:
+        args = vars(handle_args())
+        macg = MacGenerator(**args)
+        print('\n'.join(list(macg.generate())))
+    except Exception as exc:
+        print(exc)
 
 
 if __name__ == '__main__':
