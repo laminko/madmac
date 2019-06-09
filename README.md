@@ -17,9 +17,11 @@ Using `pip`:
 
 Using source:
 
-> `git clone https://github.com/laminko/madmac.git`
-> `cd madmac`
-> `python setup.py install`
+```bash
+$ git clone https://github.com/laminko/madmac.git
+$ cd madmac
+$ python setup.py install
+```
 
 ### Usage
 
