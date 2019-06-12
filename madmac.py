@@ -121,7 +121,10 @@ class MacGenerator(object):
     Class to generate EUI-48 MAC Addresses.
     """
 
-    pattern_oui = None
+    # 0 = 000000
+    min_3octet_int = 0
+    # 16777215 = ffffff
+    max_3octet_int = 16777215
 
     def __init__(self, oui=None, start=None, stop=None, total=1,
         delimiter=':', case='lower'):
@@ -151,19 +154,22 @@ class MacGenerator(object):
         cleaned = extract_alphanumeric(self.oui)
         return pair_hexvalue(cleaned, delimiter=self.delimiter)
 
+    def __pick_random_int(self):
+        return random.randint(self.min_3octet_int, self.max_3octet_int)
+
     def __validate(self):
         """
         Validate input values.
         """
         if not self.oui:
-            self.oui = int_to_hexstr(random.randint(0, 255))
+            self.oui = int_to_hexstr(self.__pick_random_int())
         else:
             self.oui = extract_alphanumeric(self.oui)
             if not validate_3octets(self.oui):
                 raise ValueError('Invalid OUI value.')
 
         if not self.start:
-            self.i_start = random.randint(0, 255)
+            self.i_start = self.__pick_random_int()
         else:
             self.start = extract_alphanumeric(self.start)
             if not validate_3octets(self.start):
