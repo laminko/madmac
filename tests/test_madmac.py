@@ -1,4 +1,3 @@
-import unittest
 from unittest import TestCase
 
 
@@ -69,8 +68,4 @@ class TestMadMac(TestCase):
 
     def test_validate_MAC_case03(self):
         self.assertTrue(madmac.validate_MAC('ab:cd:ef:12:34:56'))
-
-
-if __name__ == '__main__':
-    unittest.main()
 
