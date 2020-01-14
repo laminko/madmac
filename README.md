@@ -1,4 +1,4 @@
-# MadMAC [![Build Status](https://travis-ci.com/laminko/madmac.svg?branch=master)](https://travis-ci.com/laminko/madmac)
+# MadMAC [![Build Status](https://travis-ci.com/laminko/madmac.svg?branch=master)](https://travis-ci.com/laminko/madmac) [![codecov](https://codecov.io/gh/laminko/madmac/branch/master/graph/badge.svg)](https://codecov.io/gh/laminko/madmac)
 
 MAC address generator library for testers.
 
