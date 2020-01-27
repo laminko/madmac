@@ -1,4 +1,4 @@
-# MadMAC [![Build Status](https://travis-ci.com/laminko/madmac.svg?branch=master)](https://travis-ci.com/laminko/madmac) [![codecov](https://codecov.io/gh/laminko/madmac/branch/master/graph/badge.svg)](https://codecov.io/gh/laminko/madmac)
+# MadMAC [![Build Status](https://travis-ci.com/laminko/madmac.svg?branch=master)](https://travis-ci.com/laminko/madmac) [![codecov](https://codecov.io/gh/laminko/madmac/branch/master/graph/badge.svg)](https://codecov.io/gh/laminko/madmac) ![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/laminko/madmac) [![Total alerts](https://img.shields.io/lgtm/alerts/g/laminko/madmac.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/laminko/madmac/alerts/)
 
 MAC address generator library for testers.
 
