@@ -122,3 +122,17 @@ class TestMadMac(TestCase):
     def test_mac_generator_prepare_oui_ValueError(self):
         mc = MacGenerator(oui="xx:yy:zz")
         self.assertRaises(ValueError, mc._prepare_oui)
+
+    def test_mac_generator_prepare_start_address(self):
+        mc = MacGenerator()
+        mc._prepare_start_address()
+        self.assertIs(int, type(mc.i_start))
+
+    def test_mac_generator_prepare_start_address_user(self):
+        mc = MacGenerator(start="110000")
+        mc._prepare_start_address()
+        self.assertEqual(1114112, mc.i_start)
+
+    def test_mac_generator_prepare_start_address_ValueError(self):
+        mc = MacGenerator(start="1100YY")
+        self.assertRaises(ValueError, mc._prepare_start_address)
