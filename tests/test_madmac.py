@@ -84,13 +84,13 @@ class TestMadMac(TestCase):
         self.assertFalse(madmac.validate_3octets(""))
 
     def test_validate_MAC_case01(self):
-        self.assertTrue(madmac.validate_MAC("12345678912"))
+        self.assertTrue(madmac.validate_mac("12345678912"))
 
     def test_validate_MAC_case02(self):
-        self.assertTrue(madmac.validate_MAC("ab-cd-ef-12-34-56"))
+        self.assertTrue(madmac.validate_mac("ab-cd-ef-12-34-56"))
 
     def test_validate_MAC_case03(self):
-        self.assertTrue(madmac.validate_MAC("ab:cd:ef:12:34:56"))
+        self.assertTrue(madmac.validate_mac("ab:cd:ef:12:34:56"))
 
     def test_validate_MAC_TypeError(self):
         self.assertFalse(madmac.validate_mac("xx:yy:zz"))
