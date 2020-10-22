@@ -51,6 +51,12 @@ class TestMadMac(TestCase):
         value = madmac.access_object_member(tmp, "copy")
         self.assertEqual(value, tmp)
 
+    def test_access_object_member_UnsupportedOperation(self):
+        tmp = []
+        self.assertRaises(
+            UnsupportedOperation, madmac.access_object_member, tmp, "get"
+        )
+
     def test_validate_3octets_case01(self):
         tmp = "aabbcc"
         result = madmac.validate_3octets(tmp)
@@ -79,3 +85,9 @@ class TestMadMac(TestCase):
 
     def test_validate_MAC_case03(self):
         self.assertTrue(madmac.validate_MAC("ab:cd:ef:12:34:56"))
+
+    def test_validate_MAC_TypeError(self):
+        self.assertFalse(madmac.validate_mac("xx:yy:zz"))
+
+    def test_validate_MAC_ValueError(self):
+        self.assertFalse(madmac.validate_mac(None))
