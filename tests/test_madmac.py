@@ -104,3 +104,7 @@ class TestMadMac(TestCase):
     def test_mac_generator_normalize_oui(self):
         mc = MacGenerator(oui="AA:BB:CC", delimiter=" ")
         self.assertEqual(mc.normalize_oui(), "AA BB CC")
+        
+    def test_mac_generator_pick_random_int(self):
+        mc = MacGenerator()
+        self.assertIs(int, type(mc._pick_random_int()))
