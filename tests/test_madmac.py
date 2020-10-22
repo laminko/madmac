@@ -97,3 +97,7 @@ class TestMadMac(TestCase):
 
     def test_validate_MAC_ValueError(self):
         self.assertFalse(madmac.validate_mac(None))
+
+    def test_mac_generator_pick_random_int(self):
+        mc = MacGenerator()
+        self.assertIs(int, type(mc._pick_random_int()))
