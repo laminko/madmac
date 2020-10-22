@@ -7,6 +7,7 @@ class UnsupportedOperation(Exception):
     """
     Exception class for unsupported operations.
     """
+
     pass
 
 
@@ -17,11 +18,11 @@ def extract_alphanumeric(value):
     :param value:
     :return:
     """
-    pattern = re.compile('[\W_]+')
-    return pattern.sub('', value)
+    pattern = re.compile(r"[\W_]+")
+    return pattern.sub("", value)
 
 
-def pair_hexvalue(value, delimiter=':'):
+def pair_hexvalue(value, delimiter=":"):
     """
     Pair hex values (string) using delimiter.
     e.g. abcdef -> ab:cd:ef
@@ -31,10 +32,11 @@ def pair_hexvalue(value, delimiter=':'):
     :return:
     """
     return delimiter.join(
-        ['{}{}'.format(a, b) for a, b in zip(value[::2], value[1::2])])
+        ["{}{}".format(a, b) for a, b in zip(value[::2], value[1::2])]
+    )
 
 
-def int_to_hexstr(value, _format='{:06x}'):
+def int_to_hexstr(value, _format="{:06x}"):
     """
     Convert int to hex string.
 
@@ -43,7 +45,7 @@ def int_to_hexstr(value, _format='{:06x}'):
     :return:
     """
     if not isinstance(value, int):
-        raise ValueError('Required int.')
+        raise ValueError("Required int.")
     return _format.format(value)
 
 
@@ -74,7 +76,9 @@ def access_object_member(value, member_name, *args, **kwargs):
             return member(*args, **kwargs)
         return member
     else:
-        raise UnsupportedOperation('Unsupported operation for {}: {}'.format(value, member_name))
+        raise UnsupportedOperation(
+            "Unsupported operation for {}: {}".format(value, member_name)
+        )
 
 
 def validate_3octets(value):
@@ -91,27 +95,23 @@ def validate_3octets(value):
         is_valid = False
     except TypeError:
         is_valid = False
-    except Exception:
-        is_valid = False
     return is_valid
 
 
-def validate_MAC(value):
+def validate_mac(value):
     """
     Validate MAC address.
 
     :param value: EUI-48 MAC address
     :return:
     """
-    cleaned = extract_alphanumeric(value)
     is_valid = False
     try:
+        cleaned = extract_alphanumeric(value)
         is_valid = hexstr_to_int(cleaned) >= 0
     except ValueError:
         is_valid = False
     except TypeError:
-        is_valid = False
-    except Exception:
         is_valid = False
     return is_valid
 
@@ -121,13 +121,20 @@ class MacGenerator(object):
     Class to generate EUI-48 MAC Addresses.
     """
 
-    # 0 = 000000
+    # NOTE: 0 = 000000
     min_3octet_int = 0
-    # 16777215 = ffffff
+    # NOTE: 16777215 = ffffff
     max_3octet_int = 16777215
 
-    def __init__(self, oui=None, start=None, stop=None, total=1,
-        delimiter=':', case='lower'):
+    def __init__(
+        self,
+        oui=None,
+        start=None,
+        stop=None,
+        total=1,
+        delimiter=":",
+        case="lower",
+    ):
         """
         :param oui: 6-digit organizationally unique identifier
         :param start: NIC specific start address
@@ -154,47 +161,59 @@ class MacGenerator(object):
         cleaned = extract_alphanumeric(self.oui)
         return pair_hexvalue(cleaned, delimiter=self.delimiter)
 
-    def __pick_random_int(self):
+    def _pick_random_int(self):
         return random.randint(self.min_3octet_int, self.max_3octet_int)
 
-    def __validate(self):
-        """
-        Validate input values.
-        """
+    def _prepare_oui(self):
         if not self.oui:
-            self.oui = int_to_hexstr(self.__pick_random_int())
+            self.oui = int_to_hexstr(self._pick_random_int())
         else:
             self.oui = extract_alphanumeric(self.oui)
             if not validate_3octets(self.oui):
-                raise ValueError('Invalid OUI value.')
+                raise ValueError("Invalid OUI value.")
 
+    def _prepare_start_address(self):
         if not self.start:
-            self.i_start = self.__pick_random_int()
+            self.i_start = self._pick_random_int()
         else:
             self.start = extract_alphanumeric(self.start)
             if not validate_3octets(self.start):
-                raise ValueError('Invalid value for starting address.')
+                raise ValueError("Invalid value for starting address.")
             else:
                 self.i_start = hexstr_to_int(self.start)
 
+    def _prepare_stop_address(self):
         if not self.stop:
-            is_valid_total = self.total and \
-                access_object_member(self.total, 'real') and self.total >= 0
+            is_valid_total = (
+                self.total
+                and access_object_member(self.total, "real")
+                and self.total >= 0
+            )
             if not is_valid_total:
-                raise ValueError('Invalid value for total.')
+                raise ValueError("Invalid value for total.")
             else:
                 self.i_stop = self.i_start + self.total
         else:
             if not self.start:
                 raise ValueError(
-                    'Invalid usage. Use -s along with -r together.')
+                    "Invalid usage. Use -s along with -r together."
+                )
             self.stop = extract_alphanumeric(self.stop)
             if not validate_3octets(self.stop):
-                raise ValueError('Invalid value for ending address.')
+                raise ValueError("Invalid value for ending address.")
             else:
                 self.i_stop = hexstr_to_int(self.stop)
 
-    def __build(self):
+    def _validate(self):
+        """
+        Validate input values. If no input values provided, values will be
+        generated automatically.
+        """
+        self._prepare_oui()
+        self._prepare_start_address()
+        self._prepare_stop_address()
+
+    def _build(self):
         """
         Build generator object.
 
@@ -202,11 +221,11 @@ class MacGenerator(object):
         """
         self.oui = self.normalize_oui()
         for each in range(self.i_start, self.i_stop):
-            dev_id = pair_hexvalue(int_to_hexstr(each), delimiter=self.delimiter)
-            generated_mac = '{oui}{delimiter}{dev}'.format(
-                oui=self.oui,
-                delimiter=self.delimiter,
-                dev=dev_id
+            dev_id = pair_hexvalue(
+                int_to_hexstr(each), delimiter=self.delimiter
+            )
+            generated_mac = "{oui}{delimiter}{dev}".format(
+                oui=self.oui, delimiter=self.delimiter, dev=dev_id
             )
             yield access_object_member(generated_mac, self.case)
 
@@ -215,36 +234,38 @@ class MacGenerator(object):
         Generate EUI-48 MAC addresses.
         :return:
         """
-        self.__validate()
-        return self.__build()
+        self._validate()
+        return self._build()
 
 
 def handle_args():
     parser = argparse.ArgumentParser(
-        description='MAC address generator library for testers.')
-    parser.add_argument('-o', '--oui',
-        help='6-digit organizationally unique identifier')
-    parser.add_argument('-r', '--start',
-        help='NIC specific start address')
-    parser.add_argument('-s', '--stop',
-        help='NIC specific end address')
-    parser.add_argument('-t', '--total', type=int, default=1,
-        help='Number of MACs to generate')
-    parser.add_argument('-d', '--delimiter', default=':',
-        help='Delimiter for MAC address')
-    parser.add_argument('-c', '--case', default='lower',
-        help='Use lower or upper')
-    return parser.parse_args()
+        description="MAC address generator library for testers.",
+        argument_default=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        "-o", "--oui", help="6-digit organizationally unique identifier"
+    )
+    parser.add_argument("-r", "--start", help="NIC specific start address")
+    parser.add_argument("-s", "--stop", help="NIC specific end address")
+    parser.add_argument(
+        "-t", "--total", type=int, default=1, help="Number of MACs to generate"
+    )
+    parser.add_argument(
+        "-d", "--delimiter", default=":", help="Delimiter for MAC address"
+    )
+    parser.add_argument(
+        "-c", "--case", default="lower", help="Use lower or upper"
+    )
+    return parser
 
 
-def main():
-    try:
-        args = vars(handle_args())
-        macg = MacGenerator(**args)
-        print('\n'.join(list(macg.generate())))
-    except Exception as exc:
-        print(exc)
+def main(args):
+    macg = MacGenerator(**args)
+    return "\n".join(list(macg.generate()))
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    parser = handle_args()
+    args = vars(parser.parse_args())
+    print(main(args))
