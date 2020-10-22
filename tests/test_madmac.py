@@ -97,3 +97,13 @@ class TestMadMac(TestCase):
 
     def test_validate_MAC_ValueError(self):
         self.assertFalse(madmac.validate_mac(None))
+
+    def test_handle_args(self):
+        fn = getattr(module, "handle_args")
+        self.assertIsNotNone(fn().parse_args(["-t", "1"]))
+
+    def test_main(self):
+        handle_args = getattr(module, "handle_args")
+        main = getattr(module, "main")
+        args = vars(handle_args().parse_args(["-t", "1"]))
+        self.assertIs(str, type(main(args)))
