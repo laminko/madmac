@@ -108,3 +108,17 @@ class TestMadMac(TestCase):
     def test_mac_generator_pick_random_int(self):
         mc = MacGenerator()
         self.assertIs(int, type(mc._pick_random_int()))
+
+    def test_mac_generator_prepare_oui(self):
+        mc = MacGenerator()
+        mc._prepare_oui()
+        self.assertIs(str, type(mc.oui))
+
+    def test_mac_generator_prepare_oui_user(self):
+        mc = MacGenerator(oui="aa:bb:cc")
+        mc._prepare_oui()
+        self.assertEqual("aabbcc", mc.oui)
+
+    def test_mac_generator_prepare_oui_ValueError(self):
+        mc = MacGenerator(oui="xx:yy:zz")
+        self.assertRaises(ValueError, mc._prepare_oui)
