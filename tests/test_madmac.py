@@ -77,6 +77,12 @@ class TestMadMac(TestCase):
         result = madmac.validate_3octets(tmp)
         self.assertFalse(result)
 
+    def test_validate_3octets_TypeError(self):
+        self.assertFalse(madmac.validate_3octets([]))
+
+    def test_validate_3octets_ValueError(self):
+        self.assertFalse(madmac.validate_3octets(""))
+
     def test_validate_MAC_case01(self):
         self.assertTrue(madmac.validate_MAC("12345678912"))
 
