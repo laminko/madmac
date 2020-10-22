@@ -98,6 +98,45 @@ class TestMadMac(TestCase):
     def test_validate_MAC_ValueError(self):
         self.assertFalse(madmac.validate_mac(None))
 
+    def test_mac_generator(self):
+        self.assertIsNotNone(MacGenerator())
+
+    def test_mac_generator_normalize_oui(self):
+        mc = MacGenerator(oui="AA:BB:CC", delimiter=" ")
+        self.assertEqual(mc.normalize_oui(), "AA BB CC")
+        
+    def test_mac_generator_pick_random_int(self):
+        mc = MacGenerator()
+        self.assertIs(int, type(mc._pick_random_int()))
+
+    def test_mac_generator_prepare_oui(self):
+        mc = MacGenerator()
+        mc._prepare_oui()
+        self.assertIs(str, type(mc.oui))
+
+    def test_mac_generator_prepare_oui_user(self):
+        mc = MacGenerator(oui="aa:bb:cc")
+        mc._prepare_oui()
+        self.assertEqual("aabbcc", mc.oui)
+
+    def test_mac_generator_prepare_oui_ValueError(self):
+        mc = MacGenerator(oui="xx:yy:zz")
+        self.assertRaises(ValueError, mc._prepare_oui)
+
+    def test_mac_generator_prepare_start_address(self):
+        mc = MacGenerator()
+        mc._prepare_start_address()
+        self.assertIs(int, type(mc.i_start))
+
+    def test_mac_generator_prepare_start_address_user(self):
+        mc = MacGenerator(start="110000")
+        mc._prepare_start_address()
+        self.assertEqual(1114112, mc.i_start)
+
+    def test_mac_generator_prepare_start_address_ValueError(self):
+        mc = MacGenerator(start="1100YY")
+        self.assertRaises(ValueError, mc._prepare_start_address)
+
     def test_mac_generator_prepare_stop_address(self):
         mc = MacGenerator()
         mc._prepare_stop_address()
