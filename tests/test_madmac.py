@@ -97,3 +97,17 @@ class TestMadMac(TestCase):
 
     def test_validate_MAC_ValueError(self):
         self.assertFalse(madmac.validate_mac(None))
+
+    def test_mac_generator_prepare_oui(self):
+        mc = MacGenerator()
+        mc._prepare_oui()
+        self.assertIs(str, type(mc.oui))
+
+    def test_mac_generator_prepare_oui_user(self):
+        mc = MacGenerator(oui="aa:bb:cc")
+        mc._prepare_oui()
+        self.assertEqual("aabbcc", mc.oui)
+
+    def test_mac_generator_prepare_oui_ValueError(self):
+        mc = MacGenerator(oui="xx:yy:zz")
+        self.assertRaises(ValueError, mc._prepare_oui)
