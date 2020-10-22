@@ -1,12 +1,16 @@
-from unittest import TestCase
-
 import os
 import sys
+from unittest import TestCase
 
 module_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(module_dir)
-
-import madmac
+madmac = __import__("madmac")
+module = __import__(
+    "madmac",
+    fromlist=["UnsupportedOperation", "MacGenerator", "handle_args", "main"],
+)
+UnsupportedOperation = getattr(module, "UnsupportedOperation")
+MacGenerator = getattr(module, "MacGenerator")
 
 
 class TestMadMac(TestCase):
@@ -29,6 +33,9 @@ class TestMadMac(TestCase):
     def test_int_to_hexstr(self):
         value = madmac.int_to_hexstr(255)
         self.assertEqual(value, "0000ff")
+
+    def test_int_to_hexstr_ValueError(self):
+        self.assertRaises(ValueError, madmac.int_to_hexstr, "255")
 
     def test_hexstr_to_int(self):
         value = madmac.hexstr_to_int("0000ff")
