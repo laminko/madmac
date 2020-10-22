@@ -136,3 +136,29 @@ class TestMadMac(TestCase):
     def test_mac_generator_prepare_start_address_ValueError(self):
         mc = MacGenerator(start="1100YY")
         self.assertRaises(ValueError, mc._prepare_start_address)
+
+    def test_mac_generator_prepare_stop_address(self):
+        mc = MacGenerator()
+        mc._prepare_stop_address()
+        self.assertIs(int, type(mc.i_stop))
+
+    def test_mac_generator_prepare_stop_address_user(self):
+        mc = MacGenerator(start="000005", stop="000010")
+        mc._prepare_stop_address()
+        self.assertEqual(16, mc.i_stop)
+
+    def test_mac_generator_prepare_stop_address_ValueError(self):
+        mc = MacGenerator(stop="-10")
+        self.assertRaises(ValueError, mc._prepare_stop_address)
+
+    def test_mac_generator_prepare_stop_address_user_total(self):
+        mc = MacGenerator(total="")
+        self.assertRaises(ValueError, mc._prepare_stop_address)
+
+    def test_mac_generator_prepare_stop_address_UnsupportedOperation(self):
+        mc = MacGenerator(total="X")
+        self.assertRaises(UnsupportedOperation, mc._prepare_stop_address)
+
+    def test_mac_generator_prepare_stop_address_InvalidEndingAddress(self):
+        mc = MacGenerator(start="000005", stop="00001G")
+        self.assertRaises(ValueError, mc._prepare_stop_address)
