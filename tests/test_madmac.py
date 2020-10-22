@@ -175,3 +175,13 @@ class TestMadMac(TestCase):
     def test_mac_generator_generate(self):
         mc = MacGenerator()
         self.assertIs(str, type(list(mc.generate())[-1]))
+
+    def test_handle_args(self):
+        fn = getattr(module, "handle_args")
+        self.assertIsNotNone(fn().parse_args(["-t", "1"]))
+
+    def test_main(self):
+        handle_args = getattr(module, "handle_args")
+        main = getattr(module, "main")
+        args = vars(handle_args().parse_args(["-t", "1"]))
+        self.assertIs(str, type(main(args)))
